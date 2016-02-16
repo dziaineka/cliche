@@ -15,7 +15,7 @@ namespace cliche.Model
 {
     class ClicheFinder
     {
-        private class Cliche
+        public class Cliche
         {
             public string Str { get; set; }
             public int Sum { get; set; }
@@ -39,6 +39,14 @@ namespace cliche.Model
                 new Cliche("труженики полей",0),
                 new Cliche("на сегодняшний день",0)
             };
+        }
+
+        public List<Cliche> MyCliches
+        {
+            get
+            {
+                return myCliches;
+            }
         }
         
         public ITextDocument MyDocument

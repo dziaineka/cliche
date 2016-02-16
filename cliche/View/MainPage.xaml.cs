@@ -33,7 +33,8 @@ namespace cliche
         {
             this.InitializeComponent();
             myClicheFinder = new ClicheFinder();
-            myClicheFinder.MyDocument = myTextField.Document;           
+            myClicheFinder.MyDocument = myTextField.Document;
+            FillListView();
         }
 
         private void ClicheFileOpenButton_Click(object sender, RoutedEventArgs e)
@@ -54,6 +55,14 @@ namespace cliche
         {
             myClicheFinder.MyDocument = myTextField.Document;
             myClicheFinder.FindCliches();
+        }
+
+        private void FillListView()
+        {
+            foreach (var item in myClicheFinder.MyCliches)
+            {
+                listView.Items.Add(item.Str);
+            }
         }
     }
 }

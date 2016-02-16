@@ -42,8 +42,9 @@
             </CommandBar.Content>
             <AppBarButton Icon="OpenFile" Label="Открыть файл" Click="CheckTextFileOpenButton_Click"/>
         </CommandBar>
-        <GridView x:Name="gridView" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10">
 
-        </GridView>
+        <ListView x:Name="listView" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10" >
+
+        </ListView>
     </Grid>
 </Page>
