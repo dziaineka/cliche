@@ -27,6 +27,7 @@
                      Margin="10" 
                      PlaceholderText="Скопируйте сюда свой текст для проверки." 
                      TextChanged="myTextField_TextChanged" 
+                     IsSpellCheckEnabled="False"
                      />
 
         <CommandBar Grid.Row="1" Grid.Column="0">

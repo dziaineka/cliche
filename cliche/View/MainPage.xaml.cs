@@ -40,6 +40,7 @@ namespace cliche
         private void ClicheFileOpenButton_Click(object sender, RoutedEventArgs e)
         {
             myClicheFinder.FillClichesFromFile();
+            FillListView();
         }
 
         private void CheckTextFileOpenButton_Click(object sender, RoutedEventArgs e)
@@ -57,6 +58,7 @@ namespace cliche
             myClicheFinder.FindCliches();
         }
 
+        //Todo: repear listview
         private void FillListView()
         {
             foreach (var item in myClicheFinder.MyCliches)
