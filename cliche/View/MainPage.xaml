@@ -24,7 +24,7 @@
                      HorizontalContentAlignment="Left"
                      HorizontalAlignment="Stretch"
                      VerticalAlignment="Stretch" 
-                     Margin="10" 
+                     Margin="0" 
                      PlaceholderText="Скопируйте сюда свой текст для проверки." 
                      TextChanged="myTextField_TextChanged" 
                      IsSpellCheckEnabled="False"
@@ -44,7 +44,7 @@
             <AppBarButton Icon="OpenFile" Label="Открыть файл" Click="CheckTextFileOpenButton_Click"/>
         </CommandBar>
 
-        <ListView x:Name="listView" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10" >
+        <ListView x:Name="listView" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0" >
 
         </ListView>
     </Grid>

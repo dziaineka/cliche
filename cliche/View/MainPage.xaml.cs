@@ -9,6 +9,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
 using Windows.Storage.Pickers;
+using Windows.UI;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -37,17 +38,18 @@ namespace cliche
             FillListView();
         }
 
-        private void ClicheFileOpenButton_Click(object sender, RoutedEventArgs e)
+        private async void ClicheFileOpenButton_Click(object sender, RoutedEventArgs e)
         {
-            myClicheFinder.FillClichesFromFile();
+            await myClicheFinder.FillClichesFromFileAsync();
             FillListView();
+            HighlightCliches();
         }
 
         private void CheckTextFileOpenButton_Click(object sender, RoutedEventArgs e)
         {
             string checkText;
 
-            myClicheFinder.FillCheckTextFromFile();
+            myClicheFinder.FillCheckTextFromFileAsync();
             myClicheFinder.MyDocument.GetText(TextGetOptions.None, out checkText);
             myTextField.Document.SetText(TextSetOptions.None, checkText);
         }
@@ -58,13 +60,35 @@ namespace cliche
             myClicheFinder.FindCliches();
         }
 
-        //Todo: repear listview
         private void FillListView()
         {
+            listView.Items.Clear();
+
             foreach (var item in myClicheFinder.MyCliches)
             {
                 listView.Items.Add(item.Str);
             }
         }
+
+        private void HighlightCliches()
+        {
+            foreach (var item in myClicheFinder.MyCliches)
+            {
+                ChangeTextColor(item.Str, Color.FromArgb(100,255,255,0));
+            }
+        }
+
+        private void ChangeTextColor(string text, Color color)
+        {
+            string textStr;
+            myTextField.Document.GetText(TextGetOptions.None, out textStr);
+
+            //здесь сделать круговую обработк поиск
+
+            myTextField.Document.Selection.FindText(text, textStr.Length, FindOptions.None);
+            myTextField.Document.Selection.CharacterFormat.BackgroundColor = color;
+            myTextField.Document.ApplyDisplayUpdates();
+        }
     }
+
 }

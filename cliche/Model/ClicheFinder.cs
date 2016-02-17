@@ -116,14 +116,16 @@ namespace cliche.Model
             }          
         }
 
-        public async void FillClichesFromFile()
+        public async 
+        Task
+FillClichesFromFileAsync()
         {
             var clichesFile = await OpenTxtFileAsync();
             await FillClichesFromFileAsynk(clichesFile);
         }
 
 
-        public async void FillCheckTextFromFile()
+        public async void FillCheckTextFromFileAsync()
         {
             var textFile = await OpenTxtFileAsync();
             await FillCheckTextFromFileAsync(textFile);
