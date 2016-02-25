@@ -10,6 +10,7 @@ using Windows.Foundation.Collections;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.UI;
+using Windows.UI.Popups;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -34,7 +35,7 @@ namespace cliche
         {
             this.InitializeComponent();
             myClicheFinder = new ClicheFinder();
-            myClicheFinder.MyDocument = myTextField.Document;
+            myClicheFinder.MyDocument = myRichEdit.Document;
             FillListView();
         }
 
@@ -42,22 +43,24 @@ namespace cliche
         {
             await myClicheFinder.FillClichesFromFileAsync();
             FillListView();
-            HighlightCliches();
+            await HighlightClichesAsync();
         }
 
-        private void CheckTextFileOpenButton_Click(object sender, RoutedEventArgs e)
+        private async void CheckTextFileOpenButton_Click(object sender, RoutedEventArgs e)
         {
             string checkText;
 
-            myClicheFinder.FillCheckTextFromFileAsync();
+            await myClicheFinder.FillCheckTextFromFileAsync();
             myClicheFinder.MyDocument.GetText(TextGetOptions.None, out checkText);
-            myTextField.Document.SetText(TextSetOptions.None, checkText);
+            myRichEdit.Document.SetText(TextSetOptions.None, checkText);
+            await HighlightClichesAsync();
         }
 
-        private void myTextField_TextChanged(object sender, RoutedEventArgs e)
+        private async void myTextField_TextChanged(object sender, RoutedEventArgs e)
         {
-            myClicheFinder.MyDocument = myTextField.Document;
+            myClicheFinder.MyDocument = myRichEdit.Document;
             myClicheFinder.FindCliches();
+            await HighlightClichesAsync();
         }
 
         private void FillListView()
@@ -70,24 +73,60 @@ namespace cliche
             }
         }
 
-        private void HighlightCliches()
+        private async Task HighlightClichesAsync()
         {
+            string myStr;
+
             foreach (var item in myClicheFinder.MyCliches)
             {
-                ChangeTextColor(item.Str, Color.FromArgb(100,255,255,0));
+                myRichEdit.Document.GetText(TextGetOptions.None, out myStr);
+                if (item.Sum != 0)
+                {
+                    await ChangeTextColor(item.Str, Color.FromArgb(100, 255, 255, 0));
+                }
             }
         }
 
-        private void ChangeTextColor(string text, Color color)
+        private async Task ChangeTextColor(string text, Color color)
         {
             string textStr;
-            myTextField.Document.GetText(TextGetOptions.None, out textStr);
+            bool theEnd = false;
+            int startTextPos = 0;
+            myRichEdit.Document.GetText(TextGetOptions.None, out textStr);
 
-            //здесь сделать круговую обработк поиск
+            while (theEnd == false)
+            {
+                myRichEdit.Document.GetRange(startTextPos, textStr.Length).GetText(TextGetOptions.None, out textStr);
+                var isFinded = myRichEdit.Document.GetRange(startTextPos, textStr.Length).FindText(text, textStr.Length, FindOptions.None);
+                myRichEdit.Document.GetRange(startTextPos, textStr.Length).FindText(text, textStr.Length, FindOptions.None);
 
-            myTextField.Document.Selection.FindText(text, textStr.Length, FindOptions.None);
-            myTextField.Document.Selection.CharacterFormat.BackgroundColor = color;
-            myTextField.Document.ApplyDisplayUpdates();
+                if (isFinded != 0)
+                {
+                    string textStr2;
+                    textStr2 = myRichEdit.Document.Selection.Text;
+
+                    var dialog = new MessageDialog(textStr2);
+                    await dialog.ShowAsync();
+
+                    myRichEdit.Document.Selection.CharacterFormat.BackgroundColor = color;
+                    startTextPos = myRichEdit.Document.Selection.EndPosition;
+                    myRichEdit.Document.ApplyDisplayUpdates();
+                }
+                else
+                {
+                    theEnd = true;
+                }
+            } 
+        }
+
+        private void AddClicheButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void listView_RightTapped(object sender, RightTappedRoutedEventArgs e)
+        {
+
         }
     }
 

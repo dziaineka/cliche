@@ -10,6 +10,7 @@ using Windows.Storage.Pickers;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using System.IO.IsolatedStorage;
 
 namespace cliche.Model
 {
@@ -33,12 +34,21 @@ namespace cliche.Model
 
         public ClicheFinder()
         {
-            myCliches = new List<Cliche>
+            myCliches = new List<Cliche>();
+
+            if (FillClichesFromSettings(SettingsManager.ClicheFileString))
             {
-                new Cliche("высокие темпы роста",0),
-                new Cliche("труженики полей",0),
-                new Cliche("на сегодняшний день",0)
-            };
+
+            }
+            else
+            {
+                myCliches = new List<Cliche>
+                {
+                    new Cliche("высокие темпы роста",0),
+                    new Cliche("труженики полей",0),
+                    new Cliche("на сегодняшний день",0)
+                };
+            }
         }
 
         public List<Cliche> MyCliches
@@ -102,6 +112,28 @@ namespace cliche.Model
                 {
                     myCliches.Add(new Cliche(clicheStr, 0));
                 }
+
+                SettingsManager.ClicheFileString = await FileIO.ReadTextAsync(storageFile);
+            }
+        }
+
+        public bool FillClichesFromSettings(string clicheFileString)
+        {
+            if (clicheFileString != null)
+            {
+                string clicheLine;
+                StringReader strReader = new StringReader(clicheFileString);
+
+                while ((clicheLine = strReader.ReadLine()) != null)
+                {
+                    myCliches.Add(new Cliche(clicheLine, 0));
+                }
+
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
 
@@ -116,16 +148,14 @@ namespace cliche.Model
             }          
         }
 
-        public async 
-        Task
-FillClichesFromFileAsync()
+        public async Task FillClichesFromFileAsync()
         {
             var clichesFile = await OpenTxtFileAsync();
-            await FillClichesFromFileAsynk(clichesFile);
+            await FillClichesFromFileAsynk(clichesFile); 
         }
 
 
-        public async void FillCheckTextFromFileAsync()
+        public async Task FillCheckTextFromFileAsync()
         {
             var textFile = await OpenTxtFileAsync();
             await FillCheckTextFromFileAsync(textFile);

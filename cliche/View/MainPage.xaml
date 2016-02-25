@@ -15,11 +15,12 @@
 
         <Grid.RowDefinitions>
             <RowDefinition x:Name="textRow"/>
+            <RowDefinition x:Name="inputClicheRow" Height="Auto"/>
             <RowDefinition x:Name="wordsRow" Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <RichEditBox x:Name="myTextField" 
-                     Grid.Row="0" 
+        <RichEditBox x:Name="myRichEdit" 
+                     Grid.Row="0"
                      Grid.Column="1" 
                      HorizontalContentAlignment="Left"
                      HorizontalAlignment="Stretch"
@@ -30,22 +31,31 @@
                      IsSpellCheckEnabled="False"
                      />
 
-        <CommandBar Grid.Row="1" Grid.Column="0">
+        <CommandBar Grid.Row="2" Grid.Column="0">
             <CommandBar.Content>
                 <Grid/>
             </CommandBar.Content>
+            <AppBarButton Icon="Add" Label="Добавить клише" Click="AddClicheButton_Click"/>
             <AppBarButton Icon="OpenFile" Label="Открыть файл" Click="ClicheFileOpenButton_Click"/>
         </CommandBar>
 
-        <CommandBar Grid.Row="1" Grid.Column="1">
+        <CommandBar Grid.Row="2" Grid.Column="1">
             <CommandBar.Content>
                 <Grid/>
             </CommandBar.Content>
             <AppBarButton Icon="OpenFile" Label="Открыть файл" Click="CheckTextFileOpenButton_Click"/>
         </CommandBar>
 
-        <ListView x:Name="listView" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0" >
-
+        <ListView x:Name="listView" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0" RightTapped="listView_RightTapped" >
         </ListView>
+
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Grid.Row="1" Grid.Column="0" x:Name="inputClicheSP">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Name="inputClicheCol"/>
+                <ColumnDefinition x:Name="addClicheCol" Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBox PlaceholderText="Введите клише" Grid.Column="0"></TextBox>
+            <Button Content="ДОБАВИТЬ" Grid.Column="1"></Button>
+        </Grid>
     </Grid>
 </Page>
