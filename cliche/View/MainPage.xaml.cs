@@ -30,6 +30,7 @@ namespace cliche
     public sealed partial class MainPage : Page
     {
         private ClicheFinder myClicheFinder;
+        private string highlightedText;
 
         public MainPage()
         {
@@ -37,6 +38,7 @@ namespace cliche
             myClicheFinder = new ClicheFinder();
             myClicheFinder.MyDocument = myRichEdit.Document;
             FillListView();
+            myRichEdit.Document.GetText(TextGetOptions.None, out highlightedText); 
         }
 
         private async void ClicheFileOpenButton_Click(object sender, RoutedEventArgs e)
@@ -53,14 +55,20 @@ namespace cliche
             await myClicheFinder.FillCheckTextFromFileAsync();
             myClicheFinder.MyDocument.GetText(TextGetOptions.None, out checkText);
             myRichEdit.Document.SetText(TextSetOptions.None, checkText);
-            await HighlightClichesAsync();
         }
 
         private async void myTextField_TextChanged(object sender, RoutedEventArgs e)
         {
             myClicheFinder.MyDocument = myRichEdit.Document;
-            myClicheFinder.FindCliches();
-            await HighlightClichesAsync();
+
+            string myStr;
+            myRichEdit.Document.GetText(TextGetOptions.None, out myStr);
+
+            if (highlightedText != myStr)
+            {
+                myClicheFinder.FindCliches();
+                await HighlightClichesAsync();
+            }
         }
 
         private void FillListView()
@@ -76,47 +84,46 @@ namespace cliche
         private async Task HighlightClichesAsync()
         {
             string myStr;
+            int myIndex;
+
+            myIndex = myRichEdit.Document.Selection.StartPosition;
+            myRichEdit.Document.BatchDisplayUpdates();
+            myRichEdit.Document.GetText(TextGetOptions.None, out myStr);
 
             foreach (var item in myClicheFinder.MyCliches)
             {
-                myRichEdit.Document.GetText(TextGetOptions.None, out myStr);
                 if (item.Sum != 0)
                 {
                     await ChangeTextColor(item.Str, Color.FromArgb(100, 255, 255, 0));
                 }
             }
+
+            highlightedText = myStr;
+            myRichEdit.Document.ApplyDisplayUpdates();
+            myRichEdit.Document.Selection.SetRange(myIndex, myIndex);
+            myRichEdit.Document.Selection.CharacterFormat.BackgroundColor = Colors.White;
         }
 
         private async Task ChangeTextColor(string text, Color color)
         {
             string textStr;
-            bool theEnd = false;
-            int startTextPos = 0;
-            myRichEdit.Document.GetText(TextGetOptions.None, out textStr);
 
-            while (theEnd == false)
+            myClicheFinder.MyDocument.GetText(TextGetOptions.None, out textStr);
+
+            var myRichEditLength = textStr.Length;
+
+            myRichEdit.Document.Selection.SetRange(0, myRichEditLength);
+            int i = 1;
+            while (i > 0)
             {
-                myRichEdit.Document.GetRange(startTextPos, textStr.Length).GetText(TextGetOptions.None, out textStr);
-                var isFinded = myRichEdit.Document.GetRange(startTextPos, textStr.Length).FindText(text, textStr.Length, FindOptions.None);
-                myRichEdit.Document.GetRange(startTextPos, textStr.Length).FindText(text, textStr.Length, FindOptions.None);
+                i = myRichEdit.Document.Selection.FindText(text, myRichEditLength, FindOptions.Case);
 
-                if (isFinded != 0)
+                ITextSelection selectedText = myRichEdit.Document.Selection;
+                if (selectedText != null)
                 {
-                    string textStr2;
-                    textStr2 = myRichEdit.Document.Selection.Text;
-
-                    var dialog = new MessageDialog(textStr2);
-                    await dialog.ShowAsync();
-
-                    myRichEdit.Document.Selection.CharacterFormat.BackgroundColor = color;
-                    startTextPos = myRichEdit.Document.Selection.EndPosition;
-                    myRichEdit.Document.ApplyDisplayUpdates();
+                    selectedText.CharacterFormat.BackgroundColor = color;
                 }
-                else
-                {
-                    theEnd = true;
-                }
-            } 
+            }
         }
 
         private void AddClicheButton_Click(object sender, RoutedEventArgs e)
