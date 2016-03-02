@@ -31,6 +31,8 @@ namespace cliche
     {
         private ClicheFinder myClicheFinder;
         private string highlightedText;
+        private int selectedListViewItem;
+        const string deletedSuffix = "_todelete";
 
         public MainPage()
         {
@@ -88,7 +90,10 @@ namespace cliche
 
             myIndex = myRichEdit.Document.Selection.StartPosition;
             myRichEdit.Document.BatchDisplayUpdates();
+
             myRichEdit.Document.GetText(TextGetOptions.None, out myStr);
+            myRichEdit.Document.Selection.SetRange(0, myStr.Length);
+            myRichEdit.Document.Selection.CharacterFormat.BackgroundColor = Colors.White;
 
             foreach (var item in myClicheFinder.MyCliches)
             {
@@ -99,9 +104,9 @@ namespace cliche
             }
 
             highlightedText = myStr;
-            myRichEdit.Document.ApplyDisplayUpdates();
             myRichEdit.Document.Selection.SetRange(myIndex, myIndex);
             myRichEdit.Document.Selection.CharacterFormat.BackgroundColor = Colors.White;
+            myRichEdit.Document.ApplyDisplayUpdates();
         }
 
         private async Task ChangeTextColor(string text, Color color)
@@ -128,12 +133,52 @@ namespace cliche
 
         private void AddClicheButton_Click(object sender, RoutedEventArgs e)
         {
-
+            addClicheButtonFlyout.ShowAt((AppBarButton)sender);
         }
 
         private void listView_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
+            selectedListViewItem = (sender as ListView).SelectedIndex;
 
+            if (((FrameworkElement)e.OriginalSource).DataContext != null)
+            {
+                lVcontextMenu.ShowAt(listView, e.GetPosition(listView));
+            }
+        }
+
+        private void Exit_Click(object sender, RoutedEventArgs e)
+        {
+            lVcontextMenu.Hide();
+        }
+
+        private void DeleteMenuFlyoutItem_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            DeleteListViewItem(selectedListViewItem);
+        }
+
+        private void DeleteMenuFlyoutItem_Click(object sender, RoutedEventArgs e)
+        {
+            DeleteListViewItem(selectedListViewItem);
+        }
+
+        private void DeleteListViewItem(int lvIndex)
+        {
+            listView.Items.RemoveAt(lvIndex);
+        }
+
+        private void AddToLVClicheButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (String.IsNullOrEmpty(clicheTextBox.Text) == false)
+            {
+                listView.Items.Add(clicheTextBox.Text);
+                clicheTextBox.Text = "";
+                RescanClicheList();
+            }
+        }
+
+        private void RescanClicheList()
+        {
+            throw new NotImplementedException();
         }
     }
 

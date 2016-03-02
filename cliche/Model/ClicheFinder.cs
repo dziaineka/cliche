@@ -114,6 +114,7 @@ namespace cliche.Model
                 }
 
                 SettingsManager.ClicheFileString = await FileIO.ReadTextAsync(storageFile);
+                FindCliches();
             }
         }
 
