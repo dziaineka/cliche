@@ -31,8 +31,7 @@ namespace cliche
     {
         private ClicheFinder myClicheFinder;
         private string highlightedText;
-        private int selectedListViewItem;
-        const string deletedSuffix = "_todelete";
+        private object selectedListViewItem;
 
         public MainPage()
         {
@@ -138,10 +137,9 @@ namespace cliche
 
         private void listView_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
-            selectedListViewItem = (sender as ListView).SelectedIndex;
-
             if (((FrameworkElement)e.OriginalSource).DataContext != null)
             {
+                selectedListViewItem = (FrameworkElement)e.OriginalSource;
                 lVcontextMenu.ShowAt(listView, e.GetPosition(listView));
             }
         }
@@ -161,9 +159,9 @@ namespace cliche
             DeleteListViewItem(selectedListViewItem);
         }
 
-        private void DeleteListViewItem(int lvIndex)
+        private void DeleteListViewItem(object item)
         {
-            listView.Items.RemoveAt(lvIndex);
+            listView.Items.Remove(item);
         }
 
         private void AddToLVClicheButton_Click(object sender, RoutedEventArgs e)
@@ -172,13 +170,16 @@ namespace cliche
             {
                 listView.Items.Add(clicheTextBox.Text);
                 clicheTextBox.Text = "";
-                RescanClicheList();
+                RescanScreenClicheList();
             }
         }
 
-        private void RescanClicheList()
+        private async void RescanScreenClicheList()
         {
-            throw new NotImplementedException();
+            if (myClicheFinder.FillClichesFromCollection(listView.Items))
+            {
+                await HighlightClichesAsync();
+            }
         }
     }
 

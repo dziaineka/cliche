@@ -74,14 +74,21 @@ namespace cliche.Model
 
         public bool FindCliches(ITextDocument doc)
         {
-            doc.GetText(TextGetOptions.None, out myText);
-
-            foreach (Cliche theCliche in myCliches)
+            if (doc != null)
             {
-                theCliche.Sum = new Regex(theCliche.Str.ToUpper()).Matches(myText.ToUpper()).Count;
-            }
+                doc.GetText(TextGetOptions.None, out myText);
 
-            return true;
+                foreach (Cliche theCliche in myCliches)
+                {
+                    theCliche.Sum = new Regex(theCliche.Str.ToUpper()).Matches(myText.ToUpper()).Count;
+                }
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public bool FindCliches()
@@ -130,6 +137,29 @@ namespace cliche.Model
                     myCliches.Add(new Cliche(clicheLine, 0));
                 }
 
+                FindCliches();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool FillClichesFromCollection(ItemCollection clicheCollection)
+        {
+            if (clicheCollection != null)
+            {
+                string strToStorageCliches = "";
+
+                foreach (var item in clicheCollection)
+                {
+                    myCliches.Add(new Cliche((item as String), 0));
+                    strToStorageCliches += ((item as string)+"\r");
+                }
+
+                SettingsManager.ClicheFileString = strToStorageCliches;
+                FindCliches();
                 return true;
             }
             else
