@@ -131,6 +131,7 @@ namespace cliche.Model
             {
                 string clicheLine;
                 StringReader strReader = new StringReader(clicheFileString);
+                myCliches.Clear();
 
                 while ((clicheLine = strReader.ReadLine()) != null)
                 {
@@ -151,6 +152,7 @@ namespace cliche.Model
             if (clicheCollection != null)
             {
                 string strToStorageCliches = "";
+                myCliches.Clear();
 
                 foreach (var item in clicheCollection)
                 {

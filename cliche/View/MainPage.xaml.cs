@@ -31,7 +31,7 @@ namespace cliche
     {
         private ClicheFinder myClicheFinder;
         private string highlightedText;
-        private object selectedListViewItem;
+        private string selectedListViewItemStr;
 
         public MainPage()
         {
@@ -120,7 +120,7 @@ namespace cliche
             int i = 1;
             while (i > 0)
             {
-                i = myRichEdit.Document.Selection.FindText(text, myRichEditLength, FindOptions.Case);
+                i = myRichEdit.Document.Selection.FindText(text, myRichEditLength, FindOptions.None);
 
                 ITextSelection selectedText = myRichEdit.Document.Selection;
                 if (selectedText != null)
@@ -139,7 +139,7 @@ namespace cliche
         {
             if (((FrameworkElement)e.OriginalSource).DataContext != null)
             {
-                selectedListViewItem = (FrameworkElement)e.OriginalSource;
+                selectedListViewItemStr = ((FrameworkElement)e.OriginalSource).DataContext.ToString();
                 lVcontextMenu.ShowAt(listView, e.GetPosition(listView));
             }
         }
@@ -151,34 +151,55 @@ namespace cliche
 
         private void DeleteMenuFlyoutItem_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            DeleteListViewItem(selectedListViewItem);
+            DeleteListViewItem(selectedListViewItemStr);
         }
 
         private void DeleteMenuFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
-            DeleteListViewItem(selectedListViewItem);
+            DeleteListViewItem(selectedListViewItemStr);
         }
 
-        private void DeleteListViewItem(object item)
+        private async void DeleteListViewItem(string strToDel)
         {
-            listView.Items.Remove(item);
-        }
-
-        private void AddToLVClicheButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (String.IsNullOrEmpty(clicheTextBox.Text) == false)
+            foreach (string item in listView.Items)
             {
-                listView.Items.Add(clicheTextBox.Text);
-                clicheTextBox.Text = "";
-                RescanScreenClicheList();
+                if (item == strToDel)
+                {
+                    listView.Items.RemoveAt(listView.Items.IndexOf(item));
+                    await RescanScreenClicheList();
+                }
             }
         }
 
-        private async void RescanScreenClicheList()
+        private async void AddToLVClicheButton_Click(object sender, RoutedEventArgs e)
+        {
+            await AddClicheToListView(clicheTextBox.Text);
+        }
+
+        private async Task RescanScreenClicheList()
         {
             if (myClicheFinder.FillClichesFromCollection(listView.Items))
             {
                 await HighlightClichesAsync();
+            }
+        }
+
+        private async void clicheTextBox_KeyUp(object sender, KeyRoutedEventArgs e)
+        {
+            if (e.Key == Windows.System.VirtualKey.Enter)
+            {
+                await AddClicheToListView(clicheTextBox.Text);
+            }
+        }
+
+        private async Task AddClicheToListView(string strCliche)
+        {
+            if (String.IsNullOrEmpty(strCliche) == false)
+            {
+                listView.Items.Add(strCliche);
+                clicheTextBox.Text = "";
+                clicheTextBox.Focus(FocusState.Keyboard);
+                await RescanScreenClicheList();
             }
         }
     }

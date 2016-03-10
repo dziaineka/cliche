@@ -42,7 +42,7 @@
                                 <ColumnDefinition x:Name="inputClicheCol" Width="250"/>
                                 <ColumnDefinition x:Name="addClicheCol" Width="auto"/>
                             </Grid.ColumnDefinitions>
-                            <TextBox x:Name="clicheTextBox" PlaceholderText="Введите клише" Grid.Column="0"></TextBox>
+                            <TextBox x:Name="clicheTextBox" PlaceholderText="Введите клише" Grid.Column="0" KeyUp="clicheTextBox_KeyUp"></TextBox>
                             <Button Content="ДОБАВИТЬ" Grid.Column="1" Click="AddToLVClicheButton_Click"></Button>
                         </Grid>
                     </Flyout>
