@@ -19,7 +19,7 @@ namespace cliche.Model
                 if (IsClicheExist())
                 {
                     IsolatedStorageFile clicheFileStorage = IsolatedStorageFile.GetUserStoreForApplication();
-                    IsolatedStorageFileStream clicheFileStream = clicheFileStorage.OpenFile(clicheFileName, System.IO.FileMode.Open);
+                    IsolatedStorageFileStream clicheFileStream = clicheFileStorage.OpenFile(clicheFileName, FileMode.Open);
 
                     StreamReader sr = new StreamReader(clicheFileStream);
                     string clicheFileString = sr.ReadToEnd();
