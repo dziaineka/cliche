@@ -36,11 +36,7 @@ namespace cliche.Model
         {
             myCliches = new List<Cliche>();
 
-            if (FillClichesFromSettings(SettingsManager.ClicheFileString))
-            {
-
-            }
-            else
+            if (FillClichesFromSettings(SettingsManager.ClicheFileString) == false)
             {
                 myCliches = new List<Cliche>
                 {
@@ -82,6 +78,8 @@ namespace cliche.Model
                     new Cliche("Он и представить не мог",0),
                     new Cliche("Рано или поздно",0)
                 };
+
+                myCliches.Sort((x,y)=> string.Compare(x.Str,y.Str));
             }
         }
 
@@ -154,6 +152,7 @@ namespace cliche.Model
                     myCliches.Add(new Cliche(clicheStr, 0));
                 }
 
+                myCliches.Sort((x, y) => string.Compare(x.Str, y.Str));
                 SettingsManager.ClicheFileString = await FileIO.ReadTextAsync(storageFile);
                 FindCliches();
             }
@@ -172,6 +171,7 @@ namespace cliche.Model
                     myCliches.Add(new Cliche(clicheLine, 0));
                 }
 
+                myCliches.Sort((x, y) => string.Compare(x.Str, y.Str));
                 FindCliches();
                 return true;
             }
@@ -194,6 +194,7 @@ namespace cliche.Model
                     strToStorageCliches += ((item as string)+"\r");
                 }
 
+                myCliches.Sort((x, y) => string.Compare(x.Str, y.Str));
                 SettingsManager.ClicheFileString = strToStorageCliches;
                 FindCliches();
                 return true;
