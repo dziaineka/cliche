@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="17016skaborik.51462E10E173B" Publisher="CN=FCD718DF-BE8B-44A6-BD77-6C0462647DDA" Version="1.1.0.0" />
+  <Identity Name="17016skaborik.51462E10E173B" Publisher="CN=FCD718DF-BE8B-44A6-BD77-6C0462647DDA" Version="1.1.2.0" />
   <mp:PhoneIdentity PhoneProductId="21c9d1cc-af1f-4ba4-9cd7-39bb85639edd" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>Cliche</DisplayName>
